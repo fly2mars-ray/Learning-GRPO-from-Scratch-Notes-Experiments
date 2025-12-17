@@ -105,20 +105,28 @@ Observations
 
 # 📈 Profiling example (placeholder):
 
-![WandB profiling panels](assets/p1.png)
-Figure p1 illustrates the runtime profiling of key components in GRPO training.
+![WandB profiling panels](assets/wandb.jpg)
+
+**Figure 1 illustrates the runtime profiling of key components in GRPO training.**
+
 The transformers.generate step dominates the overall computation time, while individual reward functions (e.g., xmlcount_reward_func, strict_format_reward_func, and simple_correctness_reward_func) are relatively lightweight in isolation but accumulate noticeable overhead when evaluated across multiple group samples.
 This confirms that GRPO is generation-bound rather than reward-bound in practice, especially when using larger group sizes.
 
-![Correct but shallow reasoning](assets/p2.png)
-Figure p2 shows an example where the model has successfully learned to produce well-formed XML-style structured outputs (i.e., <reasoning> and <answer> tags), and the final answer can be correctly extracted by the parser.
+![Early-stage failure example](assets/beforetrain.jpg)
+
+**Figure p3 illustrates an early-stage training output where the model fails to follow any predefined output format.**
+
+The reasoning text and final answer are mixed together without explicit XML tags, causing reward extraction to fail or return near-zero values.
+This highlights the critical role of strict and soft format rewards in GRPO training, as the model initially lacks any inductive bias toward structured generation and must learn formatting behavior explicitly through reinforcement signals.
+
+![Correct but shallow reasoning](assets/format.jpg)
+
+**Figure p2 shows an example where the model has successfully learned to produce well-formed XML-style structured outputs (i.e., <reasoning> and <answer> tags), and the final answer can be correctly extracted by the parser.**
+
 However, the reasoning content remains shallow and largely template-driven, indicating that the model prioritizes satisfying format and correctness rewards rather than developing deeper multi-step reasoning capabilities.
 This behavior suggests that, for small-scale models, GRPO tends to enforce output structure earlier than improving reasoning quality.
 
-![Early-stage failure example](assets/p3.png)
-Figure p3 illustrates an early-stage training output where the model fails to follow any predefined output format.
-The reasoning text and final answer are mixed together without explicit XML tags, causing reward extraction to fail or return near-zero values.
-This highlights the critical role of strict and soft format rewards in GRPO training, as the model initially lacks any inductive bias toward structured generation and must learn formatting behavior explicitly through reinforcement signals.
+
 
 ***
 
