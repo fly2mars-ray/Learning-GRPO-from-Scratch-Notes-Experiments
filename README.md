@@ -61,7 +61,7 @@ Reward extraction and correctness checking work as expected once the formatting 
 
 ***
 
-✅ 3. Observed a key phenomenon:
+### ✅ 3. Observed a key phenomenon:
 
 “Format learned, reasoning not improved”
 
@@ -85,7 +85,7 @@ GRPO is good at enforcing structure and relative correctness, but not sufficient
 
 ***
 
-📊 WandB Profiling & Reward Time Analysis
+# 📊 WandB Profiling & Reward Time Analysis
 
 I logged detailed profiling metrics for each reward function and generation step.
 
@@ -103,15 +103,22 @@ Observations
 - Formatting rewards converge early and become nearly constant
 - Later training steps show reduced reward variance but no clear reasoning gain
 
-📈 Profiling example (placeholder):
+# 📈 Profiling example (placeholder):
 
 ![WandB profiling panels](assets/p1.png)
-
+Figure p1 illustrates the runtime profiling of key components in GRPO training.
+The transformers.generate step dominates the overall computation time, while individual reward functions (e.g., xmlcount_reward_func, strict_format_reward_func, and simple_correctness_reward_func) are relatively lightweight in isolation but accumulate noticeable overhead when evaluated across multiple group samples.
+This confirms that GRPO is generation-bound rather than reward-bound in practice, especially when using larger group sizes.
 
 ![Correct but shallow reasoning](assets/p2.png)
-
+Figure p2 shows an example where the model has successfully learned to produce well-formed XML-style structured outputs (i.e., <reasoning> and <answer> tags), and the final answer can be correctly extracted by the parser.
+However, the reasoning content remains shallow and largely template-driven, indicating that the model prioritizes satisfying format and correctness rewards rather than developing deeper multi-step reasoning capabilities.
+This behavior suggests that, for small-scale models, GRPO tends to enforce output structure earlier than improving reasoning quality.
 
 ![Early-stage failure example](assets/p3.png)
+Figure p3 illustrates an early-stage training output where the model fails to follow any predefined output format.
+The reasoning text and final answer are mixed together without explicit XML tags, causing reward extraction to fail or return near-zero values.
+This highlights the critical role of strict and soft format rewards in GRPO training, as the model initially lacks any inductive bias toward structured generation and must learn formatting behavior explicitly through reinforcement signals.
 
 ***
 
@@ -123,7 +130,7 @@ The model outputs valid reasoning blocks but mostly performs surface-level arith
 
 ***
 
-🙏 Acknowledgements
+# 🙏 Acknowledgements
 - Original GRPO demo by willccbb
 - GSM8K dataset
 - Qwen model family
@@ -133,7 +140,7 @@ This repository is for learning and discussion only.
 
 ***
 
-📬 Notes
+# 📬 Notes
 
 This repository is not:
 - an official GRPO implementation
